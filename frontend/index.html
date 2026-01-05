@@ -482,8 +482,9 @@
                 <button id="repeat-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl shadow-md">Repeat</button>
                 <button id="repeat-frequently-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-md">Repeat Frequently</button>
             </div>
-            <div class="mt-4">
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
                  <button id="saveDeckBtn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md">Save Current Deck</button>
+                 <button id="exportJsonBtn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md">Export JSON</button>
             </div>
         </div>
 
@@ -588,6 +589,7 @@
             const repeatBtn = document.getElementById('repeat-btn');
             const repeatFrequentlyBtn = document.getElementById('repeat-frequently-btn');
             const saveDeckBtn = document.getElementById('saveDeckBtn');
+            const exportJsonBtn = document.getElementById('exportJsonBtn');
             const deckList = document.getElementById('deck-list');
             const progressList = document.getElementById('progress-list');
             const deckModal = document.getElementById('deck-modal');
@@ -1096,6 +1098,24 @@
                 modalTitle.textContent = 'Save Deck';
                 deckModal.style.display = 'flex';
             });
+            
+             // Export JSON Button Logic
+            exportJsonBtn.addEventListener('click', () => {
+                if (!flashcardsData || flashcardsData.length === 0) {
+                    showToast("No flashcards to export.");
+                    return;
+                }
+                
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(flashcardsData, null, 2));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                downloadAnchorNode.setAttribute("download", `koicards_export_${timestamp}.json`);
+                document.body.appendChild(downloadAnchorNode); // required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+                showToast("JSON exported successfully!");
+            });
 
             modalCancelBtn.addEventListener('click', closeModal);
 
@@ -1371,6 +1391,7 @@
                 flashcardDisplay.style.display = 'flex';
                 repetitionButtons.style.display = 'flex';
                 saveDeckBtn.style.display = 'block';
+                exportJsonBtn.style.display = 'block'; // Make sure export button is shown
 
                 const flashcard = document.createElement('div');
                 flashcard.className = 'flashcard';
@@ -1468,6 +1489,7 @@ function displayMotivationalMessage() {
     flashcardDisplay.style.display = 'none';
     repetitionButtons.style.display = 'none';
     saveDeckBtn.style.display = 'none';
+    exportJsonBtn.style.display = 'none'; // Hide export button
     statusMessage.textContent = '';
     motivationalMessageDisplay.style.display = 'flex';
     setTimeout(() => {
@@ -1603,4 +1625,3 @@ const response = await fetch(localServerUrl, {
     </script>
 </body>
 </html>
-
