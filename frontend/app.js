@@ -187,6 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDeckList() {
+        if (!deckList) {
+            console.error('deckList element not found');
+            return;
+        }
         deckList.innerHTML = '';
         const decks = deckManager.getDecks();
         const deckOrder = deckManager.getDeckOrder();
@@ -280,6 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderProgressView() {
+        if (!progressList || !progressChartContainer) {
+            console.error('Progress elements not found');
+            return;
+        }
         const decks = deckManager.getDecks();
         const history = deckManager.getTestHistory();
         const rawProgressOrder = deckManager.getProgressOrder();
